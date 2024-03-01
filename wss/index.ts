@@ -50,6 +50,12 @@ io.on("connection", (socket) => {
 
         /* Check the room with how many socket is connected */
         const maxRoomSize = roomType === "cpu" ? 1 : 2;
+
+        if (io.nsps["/"].adapter.rooms[room]?.length > maxRoomSize) {
+          socket.emit("error", { message: "This room is already full" });
+          return;
+        }
+
         socket.join(room, () => {
           if (
             io.nsps["/"].adapter.rooms[room] &&
