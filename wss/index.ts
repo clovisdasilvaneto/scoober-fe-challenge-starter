@@ -201,6 +201,6 @@ io.on("connection", (socket) => {
 
 server.listen(port, () => {
   console.log(
-    `Socket Connection Established on ${process.env.HOST_LOCAL} in port ${process.env.SOCKET_PORT}`
+    `Socket Connection Established on ${process.env.HOST_LOCAL} in port ${process.env.PORT}`
   );
 });
