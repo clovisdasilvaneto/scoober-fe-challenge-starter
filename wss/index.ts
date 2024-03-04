@@ -91,6 +91,7 @@ io.on("connection", (socket) => {
         });
       })
       .catch((err) => {
+        console.error(err);
         socket.emit("error", { message: err });
       });
   });

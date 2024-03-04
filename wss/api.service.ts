@@ -13,17 +13,21 @@ class APIService {
   async createUser(id: string, name: string, room: string = "") {
     try {
       const userExist = await this._isUserExist(id);
+
       if (!userExist) {
         const userCreateResponse = await axios.post("/users", {
           id,
           name,
           room,
         });
+
         return userCreateResponse;
       } else {
         console.log("This user already exists");
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async clearUser(id: string) {
