@@ -32,6 +32,14 @@ io.on("connection", (socket) => {
 
   /* Join to the room */
   socket.on("joinRoom", ({ username, room, roomType }) => {
+    /* Check the room with how many socket is connected */
+    const maxRoomSize = roomType === "cpu" ? 1 : 2;
+
+    if (io.nsps["/"].adapter.rooms[room]?.length >= maxRoomSize) {
+      socket.emit("notAllowedError", { message: "This room is already full" });
+      return;
+    }
+
     apiService
       .assignRoom(room, socket.id, roomType)
       .then(() => {
@@ -40,20 +48,13 @@ io.on("connection", (socket) => {
           message: `welcome to room ${room}`,
           room: room,
         });
+
         if (roomType !== "cpu") {
           socket.broadcast.to(room).emit("message", {
             user: username,
             message: `has joined ${room}`,
             room: room,
           });
-        }
-
-        /* Check the room with how many socket is connected */
-        const maxRoomSize = roomType === "cpu" ? 1 : 2;
-
-        if (io.nsps["/"].adapter.rooms[room]?.length > maxRoomSize) {
-          socket.emit("error", { message: "This room is already full" });
-          return;
         }
 
         socket.join(room, () => {
@@ -76,11 +77,11 @@ io.on("connection", (socket) => {
       .getUserDetail(socket.id)
       .then((result) => {
         io.to(result?.data.room).emit("randomNumber", {
-          number: `${apiService.createRandomNumber(1999, 9999)}`,
+          number: apiService.createRandomNumber(1999, 9999),
           isFirst: true,
         });
 
-        socket.broadcast.emit("activateYourTurn", {
+        io.to(result?.data.room).emit("activateYourTurn", {
           user: io.nsps["/"].adapter.rooms[result?.data.room]
             ? Object.keys(
                 io.nsps["/"].adapter.rooms[result?.data.room].sockets

@@ -8,7 +8,7 @@ class APIService {
 
   async createUser(id: string, name: string, room: string = "") {
     try {
-      const userExist = await this._isUserExist(name);
+      const userExist = await this._isUserExist(id);
       if (!userExist) {
         const userCreateResponse = await axios.post("/users", {
           id,
@@ -17,6 +17,7 @@ class APIService {
         });
         return userCreateResponse;
       } else {
+        console.log("This user already exists");
       }
     } catch (error) {}
   }
