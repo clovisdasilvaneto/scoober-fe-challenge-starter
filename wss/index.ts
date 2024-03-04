@@ -4,7 +4,7 @@ import SocketIO from "socket.io";
 
 import APIService from "./api.service";
 
-const port = 8082;
+const port = process.env.PORT || 8082;
 const server = http.createServer(express);
 const io = SocketIO(server);
 const apiService = new APIService();
