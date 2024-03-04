@@ -3,7 +3,11 @@ class APIService {
   isUserExist: boolean = false;
 
   constructor() {
-    axios.defaults.baseURL = `http://${process.env.HOST_LOCAL}:${process.env.HOST_PORT}`;
+    if (process.env.HOST_PORT) {
+      axios.defaults.baseURL = `http://${process.env.HOST_LOCAL}:${process.env.HOST_PORT}`;
+    } else {
+      axios.defaults.baseURL = process.env.HOST_LOCAL;
+    }
   }
 
   async createUser(id: string, name: string, room: string = "") {
